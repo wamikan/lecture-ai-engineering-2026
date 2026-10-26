@@ -120,13 +120,9 @@ Kubernetesの世界では、以下のような用語が使われます。
 * **大規模で止めてはいけないWebサービスやクラウド環境**で必須の技術となっている。
 
 
+---
 
-AIE_MODEL=gemini-2.5-flash uv run python -m app.ask "Kubernetesとは何ですか？"
-[model] gemini-2.5-flash
-[質問] Kubernetesとは何ですか？
-
-APIキーかモデル名に問題があります（404）: This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started).
-(aie2026-exercises) @wamikan ➜ /workspaces/lecture-ai-engineering-2026 (lec01) $ AIE_MODEL=gemini-3.5-flash-lite uv run python -m app.ask "Kubernetesとは何ですか？"
+AIE_MODEL=gemini-3.5-flash-lite uv run python -m app.ask "Kubernetesとは何ですか？"
 [model] gemini-3.5-flash-lite
 [質問] Kubernetesとは何ですか？
 
@@ -182,7 +178,7 @@ Kubernetesは、**「大量のコンテナを安定して、自動で動かし�
 特に、Amazon (EKS)、Google (GKE)、Microsoft (AKS) などのクラウドサービスでも標準機能として提供されており、モダンなWebサービスや企業のシステム基盤には欠かせない存在となっています。
 
 
-
+---
 
 AIE_MODEL=gemini-3.1-flash-lite uv run python -m app.ask "Kubernetesとは何ですか？"
 [model] gemini-3.1-flash-lite
