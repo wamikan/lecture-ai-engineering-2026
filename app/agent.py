@@ -27,6 +27,7 @@ from pydantic_ai.providers.google import GoogleProvider
 
 from app import tools
 from app.config import MODEL, api_error_message, get_api_key
+from pydantic_ai import Agent, DeferredToolRequests
 
 INSTRUCTIONS = """\
 あなたはAIエンジニアリング講座（AIE2026）の学習支援エージェントです。
@@ -38,11 +39,23 @@ INSTRUCTIONS = """\
 """
 
 # モデルは実行時に渡す（テストではAPIを呼ばない TestModel に差し替えるため）
-agent = Agent(instructions=INSTRUCTIONS)
+# agent = Agent(instructions=INSTRUCTIONS)
+agent = Agent(
+    instructions=INSTRUCTIONS,
+    output_type=[str, DeferredToolRequests] 
+)
+
+
+# 宿題(実装): save_learning_log ツールの登録 (承認を必須にする)
+agent.tool_plain(tools.save_learning_log, requires_approval=True)
+
+
 agent.tool_plain(tools.search_glossary)
 agent.tool_plain(tools.get_lecture_summary)
 
 # TODO(第3回 演習): tools.py に make_quiz を作り、ここで登録しよう
+# 演習: make_quiz ツールの登録
+agent.tool_plain(tools.make_quiz)
 
 # 第5回: 使う MCP サーバーの設定ファイル。Claude Desktop や Cursor と同じ "mcpServers" 形式
 MCP_CONFIG = Path(__file__).resolve().parent / "mcp_servers.json"
@@ -109,6 +122,34 @@ def print_trace(result) -> None:
     print(f"[usage] {result.usage}")
 
 
+# def main() -> None:
+#     parser = argparse.ArgumentParser(description="学習支援エージェントに質問する")
+#     parser.add_argument("question", nargs="?")
+#     parser.add_argument("--trace", action="store_true", help="ツール呼び出しを表示する")
+#     parser.add_argument("--mcp", action="store_true", help="第5回: ツールを MCP サーバー（app/mcp_servers.json）から受け取る")
+#     parser.add_argument("--list-tools", action="store_true", help="モデルに見えるツール一覧を表示して終了する（APIキー不要）")
+#     args = parser.parse_args()
+
+#     target = build_mcp_agent() if args.mcp else agent
+#     if args.list_tools:
+#         print_tools(target)
+#         return
+#     if not args.question:
+#         parser.error("質問を指定してください")
+
+#     print(f"[model] {MODEL}")
+#     if args.mcp:
+#         print("[tools] MCP サーバー（app/mcp_servers.json）")
+#     try:
+#         result = target.run_sync(args.question, model=build_model())
+#     except ModelHTTPError as e:
+#         print(api_error_message(e.status_code, str(e.body)[:200]))
+#         raise SystemExit(1)
+#     print(result.output)
+#     if args.trace:
+#         print_trace(result)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="学習支援エージェントに質問する")
     parser.add_argument("question", nargs="?")
@@ -127,12 +168,59 @@ def main() -> None:
     print(f"[model] {MODEL}")
     if args.mcp:
         print("[tools] MCP サーバー（app/mcp_servers.json）")
+        
     try:
-        result = target.run_sync(args.question, model=build_model())
+        # モデルを初期化
+        model = build_model()
+        
+        
+        # 1回目の実行
+        result = target.run_sync(args.question, model=model)
+        
+        # --- 宿題(実装): 承認ループの追加 ---
+        # 結果が DeferredToolRequests（承認待ち）である限り繰り返す
+        while isinstance(result.output, DeferredToolRequests):
+            # どのツール呼び出し(tool_call_id)を承認/拒否するかを記録する辞書
+            # キー: call.tool_call_id, 値: True (承認) または False (拒否)
+            approvals_dict = {}
+
+            for call in result.output.approvals:
+                if call.tool_name == "save_learning_log":
+                    print(f"\n[確認] 学習記録を保存しようとしています。")
+                    print(f"保存内容: {call.args}")
+                    ans = input("保存を許可しますか？ (y/n): ")
+                    
+                    if ans.lower() == 'y':
+                        approvals_dict[call.tool_call_id] = True  # 承認
+                        print("保存を承認しました。")
+                    else:
+                        approvals_dict[call.tool_call_id] = False # 拒否
+                        print("保存をキャンセルしました。")
+                else:
+                    # その他の承認ツール用フォールバック
+                    approvals_dict[call.tool_call_id] = True
+            
+            # Pydantic AI に承認・拒否の判定結果を渡す
+            deferred_results = result.output.build_results(approvals=approvals_dict)
+            
+            # 判定結果と会話履歴を渡し、続きを実行する
+            # ※ 承認(True)されたツールは、この run_sync 内部で自動的に実行されます
+            result = target.run_sync(
+                "",  # 新たな質問はないため空文字
+                model=model,
+                message_history=result.all_messages(),
+                deferred_tool_results=deferred_results  # ここで渡す
+            )
+        # ----------------------------------
+        
     except ModelHTTPError as e:
         print(api_error_message(e.status_code, str(e.body)[:200]))
         raise SystemExit(1)
-    print(result.output)
+        
+    # 最終的な回答（str）を表示
+    if isinstance(result.output, str):
+        print(result.output)
+        
     if args.trace:
         print_trace(result)
 

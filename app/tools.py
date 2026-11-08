@@ -7,6 +7,9 @@
 import json
 from functools import cache
 from pathlib import Path
+import random # 追加
+import os
+from datetime import datetime
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 MAX_RESULTS = 3
@@ -77,3 +80,48 @@ def get_lecture_summary(lecture: int) -> str:
         available = sorted(p.stem for p in (DATA_DIR / "lectures").glob("*.md"))
         return f"第{lecture}回の要点はまだありません。用意されている回: {', '.join(available)}"
     return path.read_text(encoding="utf-8")
+
+
+def make_quiz(lecture: int) -> str:
+    """指定した回（1始まりの整数）の講義内容から、確認問題を1問作成して返す。
+    
+    「第X回の確認問題を出して」のように、利用者が理解度を確かめたいときに使う。
+    """
+    glossary = load_glossary()
+    
+    # 指定された回の用語を抽出
+    lecture_terms = [e for e in glossary if e.get("lecture") == lecture]
+    
+    # 第0回など、用語が存在しない場合のエラーハンドリング
+    if not lecture_terms:
+        return f"第{lecture}回の用語は見つかりませんでした。別の回を指定してください。"
+    
+    # ランダムに1つ選ぶ
+    term = random.choice(lecture_terms)
+    
+    # 問題と答えを辞書にまとめる
+    quiz = {
+        "question": f"「{term['term']}」の意味は？",
+        "answer": term['definition']
+    }
+    
+    return json.dumps(quiz, ensure_ascii=False)
+
+
+
+def save_learning_log(content: str) -> str:
+    """学習の記録やメモをテキストファイルとして保存する。
+    
+    利用者が学習した内容を記録・保存したいと明示したときに使う。
+    content には保存したいまとめやメモの文字列を入れる。
+    """
+    log_dir = Path("learning_log")
+    log_dir.mkdir(exist_ok=True)
+    
+    # 重複を防ぐため現在時刻をファイル名にする
+    filename = f"log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    filepath = log_dir / filename
+    
+    filepath.write_text(content, encoding="utf-8")
+    
+    return f"学習記録を {filepath} に保存しました。"
