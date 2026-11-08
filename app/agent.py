@@ -27,6 +27,7 @@ from pydantic_ai.providers.google import GoogleProvider
 
 from app import tools
 from app.config import MODEL, api_error_message, get_api_key
+from pydantic_ai import Agent, DeferredToolRequests
 
 INSTRUCTIONS = """\
 あなたはAIエンジニアリング講座（AIE2026）の学習支援エージェントです。
@@ -38,7 +39,17 @@ INSTRUCTIONS = """\
 """
 
 # モデルは実行時に渡す（テストではAPIを呼ばない TestModel に差し替えるため）
-agent = Agent(instructions=INSTRUCTIONS)
+# agent = Agent(instructions=INSTRUCTIONS)
+agent = Agent(
+    model="gemini-3.5-flash-lite", # ※既存のモデル設定を引き継いでください
+    instructions=INSTRUCTIONS,
+    output_type=[str, DeferredToolRequests] 
+)
+
+# 宿題(実装): save_learning_log ツールの登録 (承認を必須にする)
+agent.tool_plain(tools.save_learning_log, requires_approval=True)
+
+
 agent.tool_plain(tools.search_glossary)
 agent.tool_plain(tools.get_lecture_summary)
 
