@@ -8,6 +8,8 @@ import json
 from functools import cache
 from pathlib import Path
 import random # 追加
+import os
+from datetime import datetime
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 MAX_RESULTS = 3
@@ -104,3 +106,22 @@ def make_quiz(lecture: int) -> str:
     }
     
     return json.dumps(quiz, ensure_ascii=False)
+
+
+
+def save_learning_log(content: str) -> str:
+    """学習の記録やメモをテキストファイルとして保存する。
+    
+    利用者が学習した内容を記録・保存したいと明示したときに使う。
+    content には保存したいまとめやメモの文字列を入れる。
+    """
+    log_dir = Path("learning_log")
+    log_dir.mkdir(exist_ok=True)
+    
+    # 重複を防ぐため現在時刻をファイル名にする
+    filename = f"log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    filepath = log_dir / filename
+    
+    filepath.write_text(content, encoding="utf-8")
+    
+    return f"学習記録を {filepath} に保存しました。"
