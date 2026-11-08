@@ -2,7 +2,10 @@
 
 ## 演習
 
-- 第1回（素のLLM）とエージェントの回答の違い：[model] gemini-3.5-flash-lite
+- 第1回（素のLLM）とエージェントの回答の違い：講座に固有の事柄に関する質問に対して、第1回では用語集を使用せず回答していたため全く的外れな回答をしていたが、今回のエージェントは用語集から検索しているため正しい回答をしていた。
+以下、実際の出力。
+
+[model] gemini-3.5-flash-lite
 AIE2026の講座における「3レベル」とは、宿題の難易度や取り組み方の構成を指しています。
 
 具体的には以下の3つの段階に分かれており、ご自身の学習状況に合わせて**どれか1つに取り組めば、その回の宿題は完了**となります。
@@ -15,8 +18,13 @@ AIE2026の講座における「3レベル」とは、宿題の難易度や取り
 
 関連する回：第1回
 
+---
 
-- `--trace` で見えたツール呼び出し（ツール名と引数）：[model] gemini-3.5-flash-lite
+- `--trace` で見えたツール呼び出し（ツール名と引数）：search_glossary({'query': 'LoRA'})、search_glossary({'query': 'QLoRA'})
+- 1つの質問での LLM 呼び出し回数（`requests`）：2
+以下、実際の出力。
+
+[model] gemini-3.5-flash-lite
 LoRAとQLoRAの違いは以下の通りです。
 
 * **LoRA（Low-Rank Adaptation）**
@@ -34,9 +42,10 @@ LoRAとQLoRAの違いは以下の通りです。
 [tool return] search_glossary -> [{"term": "QLoRA", "lecture": 2, "definition": "ベースモデルの重みを4ビットなどに量子化してメモリを節約したうえで、LoRAで学習する手法。より大きなモデルを小さなGPUで扱える。本講座の第2…
 [usage] RunUsage(cost=Decimal('0.0008338'), details={'text_prompt_tokens': 1196}, input_text_tokens=1196, input_tokens=1196, output_tokens=190, requests=2, tool_calls=2)
 
+---
 
-- 1つの質問での LLM 呼び出し回数（`requests`）：
-- 追加したツールと、docstring に書いた説明：def make_quiz(lecture: int) -> str:
+- 追加したツールと、docstring に書いた説明：docstring に書いた説明は無い。追加したツールは以下：
+def make_quiz(lecture: int) -> str:
     """指定した回（1始まりの整数）の講義内容から、確認問題を1問作成して返す。
     
     「第X回の確認問題を出して」のように、利用者が理解度を確かめたいときに使う。
@@ -61,11 +70,11 @@ LoRAとQLoRAの違いは以下の通りです。
     
     return json.dumps(quiz, ensure_ascii=False)
 
-  
+---
 
 ## 宿題
 
-- 取り組んだレベル：基礎 / 実装 / 発展
+- 取り組んだレベル：実装 
 - やったこと：
 - 結果：
 - 気づき・疑問：
