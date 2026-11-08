@@ -41,7 +41,6 @@ INSTRUCTIONS = """\
 # モデルは実行時に渡す（テストではAPIを呼ばない TestModel に差し替えるため）
 # agent = Agent(instructions=INSTRUCTIONS)
 agent = Agent(
-    model="gemini-3.5-flash-lite", # ※既存のモデル設定を引き継いでください
     instructions=INSTRUCTIONS,
     output_type=[str, DeferredToolRequests] 
 )
