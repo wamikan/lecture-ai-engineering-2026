@@ -180,8 +180,7 @@ def main() -> None:
         # --- 宿題(実装): 承認ループの追加 ---
         # 結果が DeferredToolRequests（承認待ち）である限り繰り返す
         while isinstance(result.output, DeferredToolRequests):
-            approved_ids = []
-            denied_ids = {}
+            tool_results = []
 
             for call in result.output.approvals:
                 if call.tool_name == "save_learning_log":
@@ -190,28 +189,30 @@ def main() -> None:
                     ans = input("保存を許可しますか？ (y/n): ")
                     
                     if ans.lower() == 'y':
-                        approved_ids.append(call.tool_call_id)
-                        print("保存を承認しました。")
+                        # Pydantic AI の仕様: 承認した場合は、手動でツール(関数)を実行して結果を得る
+                        try:
+                            # call.args は辞書なので ** で展開して関数に渡す
+                            res = tools.save_learning_log(**call.args)
+                            print("保存を承認・実行しました。")
+                            tool_results.append(res)
+                        except Exception as e:
+                            print(f"保存エラー: {e}")
+                            tool_results.append(f"保存中にエラーが発生しました: {e}")
                     else:
-                        # 拒否する場合は理由を辞書に詰める
-                        denied_ids[call.tool_call_id] = "ユーザーによって保存がキャンセルされました。"
                         print("保存をキャンセルしました。")
+                        tool_results.append("ユーザーによって保存がキャンセルされました。")
                 else:
-                    # 将来別の承認ツールが増えた場合のフォールバック（ここでは承認扱い）
-                    approved_ids.append(call.tool_call_id)
+                    # その他の承認ツール用フォールバック
+                    tool_results.append("未対応のツールです。")
             
-            # Pydantic AI の仕様に沿って承認・拒否の結果オブジェクトを組み立てる
-            deferred_results = result.output.build_results(
-                approved=approved_ids,
-                denied=denied_ids
-            )
+            # 手動で実行した結果のリストを渡して DeferredToolResults を組み立てる（キーワード引数は不要）
+            deferred_results = result.output.build_results(tool_results)
             
-            # 承認/拒否の結果 (deferred_tool_results) と会話履歴を渡して続きを実行
+            # 組み立てた deferred_results を第1引数として渡し、会話履歴と共に続きを実行する
             result = target.run_sync(
-                "",  # 追加のプロンプト（質問）は無し
+                deferred_results,
                 model=model,
-                message_history=result.all_messages(),
-                deferred_tool_results=deferred_results
+                message_history=result.all_messages()
             )
         # ----------------------------------
         
