@@ -77,5 +77,25 @@ def make_quiz(lecture: int) -> str:
 
 - 取り組んだレベル：実装 
 - やったこと：
-- 結果：
-- 気づき・疑問：
+  - app/tools.py に、引数の文字列をテキストファイルとして保存する save_learning_log ツールを作成した。
+  - app/agent.py で、Agent の output_type に DeferredToolRequests を追加し、requires_approval=True を指定してツールを登録した。
+  - app/agent.py のメインループを改修し、モデルの出力が DeferredToolRequests の場合は while ループで利用者に y/n を求め、その結果を approvals_dict = {call.tool_call_id: True/False} として記録。それを result.output.build_results(approvals=approvals_dict) に渡し、会話履歴と共に再度 run_sync を呼び出す承認フローを実装した。
+
+- 結果：「今日の学習内容『Pydantic AIの承認フローについて学んだ』を保存して」と入力して実行したところ、ターミナル上で処理が一時停止し、「保存を許可しますか？ (y/n):」と正しくプロンプトが表示された。y を入力して承認すると、エラーなく処理が再開され、最終的にモデルから「保存しました！」という完了報告と関係する回（第7回）の回答が得られた。
+
+以下、実際の出力。
+
+uv run python -m app.agent "今 日の学習内容「Pydantic AIの承認フローについて学んだ」を保存して"
+[model] gemini-3.5-flash-lite
+
+[確認] 学習記録を保存しようとしています。
+保存内容: {'content': '今日の学習内容：Pydantic AIの承認フローについて学んだ'}
+保存を許可しますか？ (y/n): y
+保存を承認しました。
+今日の学習内容「Pydantic AIの承認フローについて学んだ」を学習記録として保存しました！
+
+（関係する回：第7回）
+
+---
+
+- 気づき・疑問：Pydantic AI (v1.x系) における承認フローの実装方法について気づきがあった。承認が下りた際に、開発者が手動で関数（ツール）を実行してその結果をモデルに返すのではなく、「どのツール呼び出しを承認(True)/拒否(False)したか」という辞書を build_results(approvals=...) に渡して処理を再開させれば、フレームワーク側で勝手に関数を実行してくれるという設計思想になっていることが分かった。
