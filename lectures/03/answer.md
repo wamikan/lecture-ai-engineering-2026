@@ -21,7 +21,7 @@ AIE2026の講座における「3レベル」とは、宿題の難易度や取り
 ---
 
 - `--trace` で見えたツール呼び出し（ツール名と引数）：search_glossary({'query': 'LoRA'})、search_glossary({'query': 'QLoRA'})
-- 1つの質問での LLM 呼び出し回数（`requests`）：2
+- 1つの質問での LLM 呼び出し回数（`requests`）：2。
 以下、実際の出力。
 
 [model] gemini-3.5-flash-lite
@@ -45,6 +45,7 @@ LoRAとQLoRAの違いは以下の通りです。
 ---
 
 - 追加したツールと、docstring に書いた説明：docstring に書いた説明は無い。追加したツールは以下：
+
 def make_quiz(lecture: int) -> str:
     """指定した回（1始まりの整数）の講義内容から、確認問題を1問作成して返す。
     
