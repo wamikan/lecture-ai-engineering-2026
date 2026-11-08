@@ -180,7 +180,9 @@ def main() -> None:
         # --- 宿題(実装): 承認ループの追加 ---
         # 結果が DeferredToolRequests（承認待ち）である限り繰り返す
         while isinstance(result.output, DeferredToolRequests):
-            tool_results = []
+            # どのツール呼び出し(tool_call_id)を承認/拒否するかを記録する辞書
+            # キー: call.tool_call_id, 値: True (承認) または False (拒否)
+            approvals_dict = {}
 
             for call in result.output.approvals:
                 if call.tool_name == "save_learning_log":
@@ -189,30 +191,25 @@ def main() -> None:
                     ans = input("保存を許可しますか？ (y/n): ")
                     
                     if ans.lower() == 'y':
-                        # Pydantic AI の仕様: 承認した場合は、手動でツール(関数)を実行して結果を得る
-                        try:
-                            # call.args は辞書なので ** で展開して関数に渡す
-                            res = tools.save_learning_log(**call.args)
-                            print("保存を承認・実行しました。")
-                            tool_results.append(res)
-                        except Exception as e:
-                            print(f"保存エラー: {e}")
-                            tool_results.append(f"保存中にエラーが発生しました: {e}")
+                        approvals_dict[call.tool_call_id] = True  # 承認
+                        print("保存を承認しました。")
                     else:
+                        approvals_dict[call.tool_call_id] = False # 拒否
                         print("保存をキャンセルしました。")
-                        tool_results.append("ユーザーによって保存がキャンセルされました。")
                 else:
                     # その他の承認ツール用フォールバック
-                    tool_results.append("未対応のツールです。")
+                    approvals_dict[call.tool_call_id] = True
             
-            # 手動で実行した結果のリストを渡して DeferredToolResults を組み立てる（キーワード引数は不要）
-            deferred_results = result.output.build_results(tool_results)
+            # Pydantic AI に承認・拒否の判定結果を渡す
+            deferred_results = result.output.build_results(approvals=approvals_dict)
             
-            # 組み立てた deferred_results を第1引数として渡し、会話履歴と共に続きを実行する
+            # 判定結果と会話履歴を渡し、続きを実行する
+            # ※ 承認(True)されたツールは、この run_sync 内部で自動的に実行されます
             result = target.run_sync(
-                deferred_results,
+                "",  # 新たな質問はないため空文字
                 model=model,
-                message_history=result.all_messages()
+                message_history=result.all_messages(),
+                deferred_tool_results=deferred_results  # ここで渡す
             )
         # ----------------------------------
         
