@@ -46,6 +46,7 @@ agent = Agent(
     output_type=[str, DeferredToolRequests] 
 )
 
+
 # 宿題(実装): save_learning_log ツールの登録 (承認を必須にする)
 agent.tool_plain(tools.save_learning_log, requires_approval=True)
 
@@ -122,6 +123,34 @@ def print_trace(result) -> None:
     print(f"[usage] {result.usage}")
 
 
+# def main() -> None:
+#     parser = argparse.ArgumentParser(description="学習支援エージェントに質問する")
+#     parser.add_argument("question", nargs="?")
+#     parser.add_argument("--trace", action="store_true", help="ツール呼び出しを表示する")
+#     parser.add_argument("--mcp", action="store_true", help="第5回: ツールを MCP サーバー（app/mcp_servers.json）から受け取る")
+#     parser.add_argument("--list-tools", action="store_true", help="モデルに見えるツール一覧を表示して終了する（APIキー不要）")
+#     args = parser.parse_args()
+
+#     target = build_mcp_agent() if args.mcp else agent
+#     if args.list_tools:
+#         print_tools(target)
+#         return
+#     if not args.question:
+#         parser.error("質問を指定してください")
+
+#     print(f"[model] {MODEL}")
+#     if args.mcp:
+#         print("[tools] MCP サーバー（app/mcp_servers.json）")
+#     try:
+#         result = target.run_sync(args.question, model=build_model())
+#     except ModelHTTPError as e:
+#         print(api_error_message(e.status_code, str(e.body)[:200]))
+#         raise SystemExit(1)
+#     print(result.output)
+#     if args.trace:
+#         print_trace(result)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="学習支援エージェントに質問する")
     parser.add_argument("question", nargs="?")
@@ -140,12 +169,49 @@ def main() -> None:
     print(f"[model] {MODEL}")
     if args.mcp:
         print("[tools] MCP サーバー（app/mcp_servers.json）")
+        
     try:
-        result = target.run_sync(args.question, model=build_model())
+        # モデルを初期化
+        model = build_model()
+        
+        # 1回目の実行
+        result = target.run_sync(args.question, model=model)
+        
+        # --- 宿題(実装): 承認ループの追加 ---
+        # 結果が DeferredToolRequests（承認待ち）である限り繰り返す
+        while isinstance(result.output, DeferredToolRequests):
+            for call in result.output.approvals:
+                if call.tool_name == "save_learning_log":
+                    print(f"\n[確認] 学習記録を保存しようとしています。")
+                    print(f"保存内容: {call.args}")
+                    ans = input("保存を許可しますか？ (y/n): ")
+                    
+                    if ans.lower() == 'y':
+                        call.resolve()  # 承認
+                        print("保存を承認しました。")
+                    else:
+                        call.reject("ユーザーによって保存がキャンセルされました。")  # 拒否
+                        print("保存をキャンセルしました。")
+                else:
+                    # 将来別の承認ツールが増えた場合のフォールバック
+                    call.resolve()
+            
+            # 承認/拒否の結果と、これまでの会話履歴を渡して続きを実行
+            result = target.run_sync(
+                result.output,
+                model=model,
+                message_history=result.all_messages()
+            )
+        # ----------------------------------
+        
     except ModelHTTPError as e:
         print(api_error_message(e.status_code, str(e.body)[:200]))
         raise SystemExit(1)
-    print(result.output)
+        
+    # 最終的な回答（str）を表示
+    if isinstance(result.output, str):
+        print(result.output)
+        
     if args.trace:
         print_trace(result)
 
