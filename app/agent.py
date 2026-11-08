@@ -173,12 +173,16 @@ def main() -> None:
         # モデルを初期化
         model = build_model()
         
+        
         # 1回目の実行
         result = target.run_sync(args.question, model=model)
         
         # --- 宿題(実装): 承認ループの追加 ---
         # 結果が DeferredToolRequests（承認待ち）である限り繰り返す
         while isinstance(result.output, DeferredToolRequests):
+            approved_ids = []
+            denied_ids = {}
+
             for call in result.output.approvals:
                 if call.tool_name == "save_learning_log":
                     print(f"\n[確認] 学習記録を保存しようとしています。")
@@ -186,20 +190,28 @@ def main() -> None:
                     ans = input("保存を許可しますか？ (y/n): ")
                     
                     if ans.lower() == 'y':
-                        call.resolve()  # 承認
+                        approved_ids.append(call.tool_call_id)
                         print("保存を承認しました。")
                     else:
-                        call.reject("ユーザーによって保存がキャンセルされました。")  # 拒否
+                        # 拒否する場合は理由を辞書に詰める
+                        denied_ids[call.tool_call_id] = "ユーザーによって保存がキャンセルされました。"
                         print("保存をキャンセルしました。")
                 else:
-                    # 将来別の承認ツールが増えた場合のフォールバック
-                    call.resolve()
+                    # 将来別の承認ツールが増えた場合のフォールバック（ここでは承認扱い）
+                    approved_ids.append(call.tool_call_id)
             
-            # 承認/拒否の結果と、これまでの会話履歴を渡して続きを実行
+            # Pydantic AI の仕様に沿って承認・拒否の結果オブジェクトを組み立てる
+            deferred_results = result.output.build_results(
+                approved=approved_ids,
+                denied=denied_ids
+            )
+            
+            # 承認/拒否の結果 (deferred_tool_results) と会話履歴を渡して続きを実行
             result = target.run_sync(
-                result.output,
+                "",  # 追加のプロンプト（質問）は無し
                 model=model,
-                message_history=result.all_messages()
+                message_history=result.all_messages(),
+                deferred_tool_results=deferred_results
             )
         # ----------------------------------
         
