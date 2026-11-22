@@ -1,0 +1,201 @@
+{
+  "summary": {
+    "label": "before",
+    "n": 21,
+    "format_rate": 0.09523809523809523,
+    "content_rate": 0.0,
+    "both_rate": 0.0,
+    "seconds": 36.6
+  },
+  "rows": [
+    {
+      "question": "制御のタイミングは？",
+      "raw": "{\"answer\": \"10Hz\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "制御周期の具体的な要件を教えてください",
+      "raw": "{\"answer\": \"10Hz（100ms以内）\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "リアルタイム層は何ミリ秒以内の処理が必要ですか",
+      "raw": "{\"answer\": \"100ms\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "ガバナンスの周期は？",
+      "raw": "{\"answer\": \"1Hz\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "ガバナンス層の更新タイミングはどうなっていますか",
+      "raw": "{\"answer\": \"1Hz（1000ms）\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "LLM側の周期要件を教えてください",
+      "raw": "{\"answer\": \"LLM側の周期要件は1Hz（1000ms）です。\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "FSMはどこで使われますか",
+      "raw": "{\"answer\": \"有限オートマトン（FSM）に基づくルールベース検証器を使用します\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "状態遷移のチェックにはどのような手法を用いますか",
+      "raw": "{\"answer\": \"有限オートマトン（FSM）に基づくルールベース検証器を使用します\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "検証器のアーキテクチャを教えてください",
+      "raw": "{\"answer\": \"有限オートマトン（FSM）に基づくルールベース検証器を使用します\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "使用するAPIを教えてください",
+      "raw": "{\"answer\": \"Vertex AI Gemini API\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "LLMの推論に使う具体的なサービス名は何ですか",
+      "raw": "{\"answer\": \"Vertex AI Gemini API\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "利用するAPIプラットフォームを教えてください",
+      "raw": "{\"answer\": \"Vertex AI Gemini API\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "データセットの指定はありますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "システム評価に使用するデータセット名を教えてください",
+      "raw": "{\"answer\": \"nuScenes\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "自動運転のデータは何を使いますか",
+      "raw": "{\"answer\": \"nuScenes\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "Azure OpenAIは使用できますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "シミュレータは何を使用しますか",
+      "raw": "{\"answer\": \"LLM\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "カメラのフレームレート指定はありますか",
+      "raw": "{\"answer\": \"なし\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "学習時のオプティマイザは何を使用しましたか",
+      "raw": "{\"answer\": \"学習時のオプティマイザは None です\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "自動ブレーキの制動距離の要件はありますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "ROS2との連携はサポートされていますか",
+      "raw": "{\"answer\": \"否\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    }
+  ]
+}

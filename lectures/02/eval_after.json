@@ -1,0 +1,201 @@
+{
+  "summary": {
+    "label": "after",
+    "n": 21,
+    "format_rate": 1.0,
+    "content_rate": 0.9523809523809523,
+    "both_rate": 0.9523809523809523,
+    "seconds": 42.5
+  },
+  "rows": [
+    {
+      "question": "制御のタイミングは？",
+      "raw": "{\"answer\": \"リアルタイム制御層の制御周期は10Hz（100ms以内）を要件とします。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "制御周期の具体的な要件を教えてください",
+      "raw": "{\"answer\": \"リアルタイム制御層の制御周期は10Hz（100ms以内）を要件とします。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "リアルタイム層は何ミリ秒以内の処理が必要ですか",
+      "raw": "{\"answer\": \"リアルタイム制御層の制御周期は10Hz（100ms以内）を要件とします。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "ガバナンスの周期は？",
+      "raw": "{\"answer\": \"ガバナンス層はLLMを用いており、更新周期は1Hz（1000ms）です。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "ガバナンス層の更新タイミングはどうなっていますか",
+      "raw": "{\"answer\": \"ガバナンス層はLLMを用いており、更新周期は1Hz（1000ms）です。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "LLM側の周期要件を教えてください",
+      "raw": "{\"answer\": \"ガバナンス層はLLMを用いており、更新周期は1Hz（1000ms）です。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "FSMはどこで使われますか",
+      "raw": "{\"answer\": \"状態遷移の検証には、有限オートマトン（FSM）に基づくルールベース検証器を使用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "状態遷移のチェックにはどのような手法を用いますか",
+      "raw": "{\"answer\": \"状態遷移の検証には、有限オートマトン（FSM）に基づくルールベース検証器を使用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "検証器のアーキテクチャを教えてください",
+      "raw": "{\"answer\": \"状態遷移の検証には、有限オートマトン（FSM）に基づくルールベース検証器を使用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "使用するAPIを教えてください",
+      "raw": "{\"answer\": \"LLMの推論にはVertex AI Gemini APIを利用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "LLMの推論に使う具体的なサービス名は何ですか",
+      "raw": "{\"answer\": \"LLMの推論にはVertex AI Gemini APIを利用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "利用するAPIプラットフォームを教えてください",
+      "raw": "{\"answer\": \"LLMの推論にはVertex AI Gemini APIを利用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "データセットの指定はありますか",
+      "raw": "{\"answer\": \"評価用データセットとしてnuScenesを使用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "システム評価に使用するデータセット名を教えてください",
+      "raw": "{\"answer\": \"評価用データセットとしてnuScenesを使用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "自動運転のデータは何を使いますか",
+      "raw": "{\"answer\": \"評価用データセットとしてnuScenesを使用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "Azure OpenAIは使用できますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。運営に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "シミュレータは何を使用しますか",
+      "raw": "{\"answer\": \"状態遷移の検証には、有限オートマトン（FSM）に基づくルールベース検証器を使用します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "カメラのフレームレート指定はありますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。運営に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "学習時のオプティマイザは何を使用しましたか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。運営に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "自動ブレーキの制動距離の要件はありますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。運営に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "ROS2との連携はサポートされていますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。運営に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    }
+  ]
+}
